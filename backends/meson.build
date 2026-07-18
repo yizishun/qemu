@@ -17,8 +17,10 @@ if host_os != 'windows'
     system_ss.add([files('hostmem-shm.c'), rt])
   endif
 endif
-if host_os == 'linux'
+if has_memfd
   system_ss.add(files('hostmem-memfd.c'))
+endif
+if host_os == 'linux'
   system_ss.add(files('host_iommu_device.c'))
 endif
 if keyutils.found()

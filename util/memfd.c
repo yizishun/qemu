@@ -45,6 +45,7 @@ int memfd_create(const char *name, unsigned int flags)
     return -1;
 #endif
 }
+#define CONFIG_MEMFD 1
 #endif
 
 int qemu_memfd_create(const char *name, size_t size, bool hugetlb,
@@ -59,7 +60,7 @@ int qemu_memfd_create(const char *name, size_t size, bool hugetlb,
 
     htsize = htsize << MFD_HUGE_SHIFT;
 
-#ifdef CONFIG_LINUX
+#ifdef CONFIG_MEMFD
     int mfd = -1;
     unsigned int flags = MFD_CLOEXEC;
 
@@ -198,7 +199,7 @@ bool qemu_memfd_alloc_check(void)
  */
 bool qemu_memfd_check(unsigned int flags)
 {
-#ifdef CONFIG_LINUX
+#ifdef CONFIG_MEMFD
     int mfd;
     static int memfd_check = MEMFD_TODO;
 

@@ -778,7 +778,7 @@
   'data': { '*hugetlb': 'bool',
             '*hugetlbsize': 'size',
             '*seal': 'bool' },
-  'if': 'CONFIG_LINUX' }
+  'if': 'CONFIG_MEMFD' }
 
 ##
 # @MemoryBackendShmProperties:
@@ -1292,7 +1292,7 @@
       'if': 'CONFIG_LINUX' },
     'memory-backend-file',
     { 'name': 'memory-backend-memfd',
-      'if': 'CONFIG_LINUX' },
+      'if': 'CONFIG_MEMFD' },
     'memory-backend-ram',
     { 'name': 'memory-backend-shm',
       'if': 'CONFIG_POSIX' },
@@ -1372,7 +1372,7 @@
                                       'if': 'CONFIG_LINUX' },
       'memory-backend-file':        'MemoryBackendFileProperties',
       'memory-backend-memfd':       { 'type': 'MemoryBackendMemfdProperties',
-                                      'if': 'CONFIG_LINUX' },
+                                      'if': 'CONFIG_MEMFD' },
       'memory-backend-ram':         'MemoryBackendProperties',
       'memory-backend-shm':         { 'type': 'MemoryBackendShmProperties',
                                       'if': 'CONFIG_POSIX' },

@@ -21,8 +21,12 @@
 #include "trace.h"
 #include "system/ramblock.h"
 #include "system/hostmem.h"
-#include <sys/ioctl.h>
+#ifdef CONFIG_LINUX
 #include <linux/memfd.h>
+#endif
+#ifdef CONFIG_FREEBSD
+#include <sys/mman.h>
+#endif
 #include "qemu/memfd.h"
 #include "standard-headers/linux/udmabuf.h"
 #include "standard-headers/drm/drm_fourcc.h"
@@ -32,12 +36,7 @@ static void virtio_gpu_create_udmabuf(struct virtio_gpu_simple_resource *res)
     struct udmabuf_create_list *list;
     RAMBlock *rb;
     ram_addr_t offset;
-    int udmabuf, i;
-
-    udmabuf = udmabuf_fd();
-    if (udmabuf < 0) {
-        return;
-    }
+    int i;
 
     list = g_malloc0(sizeof(struct udmabuf_create_list) +
                      sizeof(struct udmabuf_create_item) * res->iov_cnt);
@@ -60,7 +59,7 @@ static void virtio_gpu_create_udmabuf(struct virtio_gpu_simple_resource *res)
     list->count = res->iov_cnt;
     list->flags = UDMABUF_FLAGS_CLOEXEC;
 
-    res->dmabuf_fd = ioctl(udmabuf, UDMABUF_CREATE_LIST, list);
+    res->dmabuf_fd = udmabuf_do_create_list(list);
     if (res->dmabuf_fd < 0) {
         warn_report("%s: UDMABUF_CREATE_LIST: %s", __func__,
                     strerror(errno));
@@ -114,11 +113,9 @@ static int find_memory_backend_type(Object *obj, void *opaque)
 bool virtio_gpu_have_udmabuf(void)
 {
     Object *memdev_root;
-    int udmabuf;
     bool memfd_backend = false;
 
-    udmabuf = udmabuf_fd();
-    if (udmabuf < 0) {
+    if (!udmabuf_available()) {
         return false;
     }
 

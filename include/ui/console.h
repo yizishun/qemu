@@ -443,9 +443,14 @@ bool vnc_display_reload_certs(const char *id,  Error **errp);
 bool vnc_display_update(DisplayUpdateOptionsVNC *arg, Error **errp);
 void vnc_cleanup(void);
 
-#ifdef CONFIG_LINUX
+#if defined(CONFIG_LINUX) || defined(CONFIG_FREEBSD)
 /* udmabuf.c */
-int udmabuf_fd(void);
+struct udmabuf_create;
+struct udmabuf_create_list;
+
+bool udmabuf_available(void);
+int udmabuf_do_create(const struct udmabuf_create *create);
+int udmabuf_do_create_list(const struct udmabuf_create_list *list);
 #endif
 
 /* util.c */
