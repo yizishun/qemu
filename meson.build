@@ -2779,9 +2779,10 @@ endif
 config_host_data.set('CONFIG_MADVISE', has_madvise)
 config_host_data.set('HAVE_MADVISE_WITHOUT_PROTOTYPE', missing_madvise_proto)
 
-config_host_data.set('CONFIG_MEMFD', cc.links(osdep_prefix + '''
+has_memfd = cc.links(osdep_prefix + '''
   #include <sys/mman.h>
-  int main(void) { return memfd_create("foo", MFD_ALLOW_SEALING); }'''))
+  int main(void) { return memfd_create("foo", MFD_ALLOW_SEALING); }''')
+config_host_data.set('CONFIG_MEMFD', has_memfd)
 config_host_data.set('CONFIG_OPEN_BY_HANDLE', cc.links(osdep_prefix + '''
   #if !defined(AT_EMPTY_PATH)
   # error missing definition
