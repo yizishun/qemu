@@ -21,7 +21,12 @@
 #include "trace.h"
 #include "system/ramblock.h"
 #include "system/hostmem.h"
+#ifdef CONFIG_LINUX
 #include <linux/memfd.h>
+#endif
+#ifdef CONFIG_FREEBSD
+#include <sys/mman.h>
+#endif
 #include "qemu/memfd.h"
 #include "standard-headers/linux/udmabuf.h"
 #include "standard-headers/drm/drm_fourcc.h"

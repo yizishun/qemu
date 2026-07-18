@@ -68,9 +68,15 @@ endif
 system_ss.add(when: spice_protocol, if_true: files('vdagent.c'))
 
 if host_os == 'linux'
-  system_ss.add(files('input-linux.c', 'udmabuf.c'))
+  system_ss.add(files('input-linux.c'))
 endif
 system_ss.add(when: cocoa, if_true: files('cocoa.m'))
+
+if host_os == 'linux'
+  system_ss.add(files('udmabuf.c'))
+elif host_os == 'freebsd'
+  system_ss.add(files('udmabuf-freebsd.c'))
+endif
 
 vnc_ss = ss.source_set()
 vnc_ss.add(files(
